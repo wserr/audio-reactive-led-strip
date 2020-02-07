@@ -129,15 +129,46 @@ def _update_max7219():
     b = p[2][:].astype(int)
     rgb = np.bitwise_or(np.bitwise_or(r, g), b)
 
+    x = 0
+    y = 0
     for i in range(config.N_PIXELS):
-        x = 0
-        y = 0
+
         with canvas(device) as draw:
-            if rgb[i] ==1: draw.point((x,y),fill="white")
+            if rgb[i] == 1: draw.point((x,y),fill="white")
             x=x+1
         if x == 8:
             x=0
             y=y+1
+
+def _update_test():
+    """Updates the max 7219 chip
+
+    """
+    global pixels, _prev_pixels
+    # Truncate values and cast to integer
+    pixels = np.clip(pixels, 0, 1).astype(int)
+    # Optional gamma correction
+    p = _gamma[pixels] if config.SOFTWARE_GAMMA_CORRECTION else np.copy(pixels)
+    # Encode 24-bit LED values in 32 bit integers
+    r = np.left_shift(p[0][:].astype(int), 8)
+    g = np.left_shift(p[1][:].astype(int), 16)
+    b = p[2][:].astype(int)
+    rgb = np.bitwise_or(np.bitwise_or(r, g), b)
+
+    x = 0
+    y = 0
+    for i in range(config.N_PIXELS):
+        if rgb[i] == 1: 
+            print(1,end='')
+        else:
+            print(0,end='')
+            x=x+1
+        if x == 8:
+            x=0
+            y=y+1
+            print(" ")
+    print(" ")
+    print(" ")
 
 
 def _update_blinkstick():
@@ -177,6 +208,8 @@ def update():
         _update_blinkstick()
     elif config.DEVICE == 'max7219':
         _update_max7219()
+    elif config.DEVICE == 'test':
+        _update_test()
     else:
         raise ValueError('Invalid device selected')
 
