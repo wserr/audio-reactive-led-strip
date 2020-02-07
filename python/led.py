@@ -129,7 +129,7 @@ def _update_max7219():
     b = p[2][:].astype(int)
     rgb = np.bitwise_or(np.bitwise_or(r, g), b)
 
-    for pixel in pixels:
+    for i in range(config.N_PIXELS):
         x = 0
         y = 0
         with canvas(device) as draw:
