@@ -30,6 +30,12 @@ elif config.DEVICE == 'blinkstick':
     # Create a listener that turns the leds off when the program terminates
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGINT, signal_handler)
+elif config.DEVICE == 'max7219':
+    from luma.led_matrix.device import max7219
+    from luma.core.interface.serial import spi, noop
+    from luma.core.render import canvas
+    serial = spi(port=0, device=0,gpio=noop())
+    device = max7219(serial, cascaded=1,block_orientation=-90)
 
 _gamma = np.load(config.GAMMA_TABLE_PATH)
 """Gamma lookup table used for nonlinear brightness correction"""
@@ -108,6 +114,32 @@ def _update_pi():
     _prev_pixels = np.copy(p)
     strip.show()
 
+def _update_max7219():
+    """Updates the max 7219 chip
+
+    """
+    global pixels, _prev_pixels
+    # Truncate values and cast to integer
+    pixels = np.clip(pixels, 0, 1).astype(int)
+    # Optional gamma correction
+    p = _gamma[pixels] if config.SOFTWARE_GAMMA_CORRECTION else np.copy(pixels)
+    # Encode 24-bit LED values in 32 bit integers
+    r = np.left_shift(p[0][:].astype(int), 8)
+    g = np.left_shift(p[1][:].astype(int), 16)
+    b = p[2][:].astype(int)
+    rgb = np.bitwise_or(np.bitwise_or(r, g), b)
+
+    for pixel in pixels:
+        x = 0
+        y = 0
+        with canvas(device) as draw:
+            if rgb[i] ==1: draw.point((x,y),fill="white")
+            x=x+1
+        if x == 8:
+            x=0
+            y=y+1
+
+
 def _update_blinkstick():
     """Writes new LED values to the Blinkstick.
         This function updates the LED strip with new values.
@@ -143,6 +175,8 @@ def update():
         _update_pi()
     elif config.DEVICE == 'blinkstick':
         _update_blinkstick()
+    elif config.DEVICE == 'max7219':
+        _update_max7219()
     else:
         raise ValueError('Invalid device selected')
 

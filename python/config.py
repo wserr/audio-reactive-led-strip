@@ -3,7 +3,7 @@ from __future__ import print_function
 from __future__ import division
 import os
 
-DEVICE = 'esp8266'
+DEVICE = 'max7219'
 """Device used to control LED strip. Must be 'pi',  'esp8266' or 'blinkstick'
 
 'esp8266' means that you are using an ESP8266 module to control the LED strip
@@ -14,6 +14,9 @@ audio input and control the LED strip directly.
 
 'blinkstick' means that a BlinkstickPro is connected to this PC which will be used
 to control the leds connected to it.
+
+'max7219' Expansion: use the max7219 chip with the raspberry pi
+
 """
 
 if DEVICE == 'esp8266':
@@ -48,7 +51,7 @@ USE_GUI = True
 DISPLAY_FPS = True
 """Whether to display the FPS when running (can reduce performance)"""
 
-N_PIXELS = 60
+N_PIXELS = 16
 """Number of pixels in the LED strip (must match ESP8266 firmware)"""
 
 GAMMA_TABLE_PATH = os.path.join(os.path.dirname(__file__), 'gamma_table.npy')
@@ -56,6 +59,8 @@ GAMMA_TABLE_PATH = os.path.join(os.path.dirname(__file__), 'gamma_table.npy')
 
 MIC_RATE = 44100
 """Sampling frequency of the microphone in Hz"""
+
+SOFTWARE_GAMMA_CORRECTION = 0
 
 FPS = 60
 """Desired refresh rate of the visualization (frames per second)
