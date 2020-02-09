@@ -130,6 +130,8 @@ def _update_max7219():
     # Optional gamma correction
     p = _gamma[pixels] if config.SOFTWARE_GAMMA_CORRECTION else np.copy(pixels)
 
+    x = 0
+    y = 0
     for i in range(config.N_PIXELS):
 
         with canvas(device) as draw:
