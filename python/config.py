@@ -62,7 +62,7 @@ MIC_RATE = 44100
 
 SOFTWARE_GAMMA_CORRECTION = 0
 
-FPS = 60
+FPS = 15
 """Desired refresh rate of the visualization (frames per second)
 
 FPS indicates the desired refresh rate, or frames-per-second, of the audio
@@ -84,10 +84,10 @@ assert FPS <= _max_led_FPS, 'FPS must be <= {}'.format(_max_led_FPS)
 MIN_FREQUENCY = 200
 """Frequencies below this value will be removed during audio processing"""
 
-MAX_FREQUENCY = 12000
+MAX_FREQUENCY = 20000
 """Frequencies above this value will be removed during audio processing"""
 
-N_FFT_BINS = 24
+N_FFT_BINS = 8
 """Number of frequency bins to use when transforming audio to frequency domain
 
 Fast Fourier transforms are used to transform time-domain audio data to the
